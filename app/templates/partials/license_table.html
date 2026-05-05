@@ -1,0 +1,50 @@
+{% set badge = {"active": "success", "expired": "danger", "cancelled": "secondary"} %}
+{% set status_label = {"active": "활성", "expired": "만료", "cancelled": "해지"} %}
+
+{% if licenses %}
+  {% for lic in licenses %}
+  <tr>
+    <td class="ps-3 fw-semibold">{{ lic.product_name }}</td>
+    <td class="text-muted">{{ lic.account or "-" }}</td>
+    <td>{{ lic.manager or "-" }}</td>
+    <td>{{ lic.department or "-" }}</td>
+    <td>{{ lic.quantity }}</td>
+    <td>
+      {% if lic.expire_date %}
+        {% set days = (lic.expire_date - today).days %}
+        {% if days <= 30 and days >= 0 and lic.status == "active" %}
+          <span class="expire-warn">{{ lic.expire_date }} (D-{{ days }})</span>
+        {% else %}
+          {{ lic.expire_date }}
+        {% endif %}
+      {% else %}
+        -
+      {% endif %}
+    </td>
+    <td>
+      <span class="badge bg-{{ badge.get(lic.status, 'secondary') }}">
+        {{ status_label.get(lic.status, lic.status) }}
+      </span>
+    </td>
+    <td class="text-end pe-3">
+      <button class="btn btn-outline-secondary btn-sm me-1"
+              hx-get="/partials/licenses/{{ lic.id }}/form"
+              hx-target="#modal-container"
+              hx-swap="innerHTML">
+        수정
+      </button>
+      <button class="btn btn-outline-danger btn-sm"
+              hx-delete="/partials/licenses/{{ lic.id }}"
+              hx-target="#license-table"
+              hx-swap="innerHTML"
+              hx-confirm="'{{ lic.product_name }}' 라이선스를 삭제하시겠습니까?">
+        삭제
+      </button>
+    </td>
+  </tr>
+  {% endfor %}
+{% else %}
+  <tr>
+    <td colspan="8" class="text-center text-muted py-4">등록된 라이선스가 없습니다.</td>
+  </tr>
+{% endif %}

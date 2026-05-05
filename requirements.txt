@@ -7,3 +7,4 @@ pydantic-settings
 msal
 jinja2
 python-dotenv
+python-multipart

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4 class="mb-0 fw-bold">라이선스 관리</h4>
+  <button class="btn btn-primary btn-sm"
+          hx-get="/partials/licenses/form"
+          hx-target="#modal-container"
+          hx-swap="innerHTML">
+    + 새 라이선스
+  </button>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+    <table class="table table-hover mb-0 align-middle">
+      <thead class="table-light">
+        <tr>
+          <th class="ps-3">제품명</th>
+          <th>계정</th>
+          <th>담당자</th>
+          <th>부서</th>
+          <th>수량</th>
+          <th>만료일</th>
+          <th>상태</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="license-table"
+             hx-target="this"
+             hx-swap="innerHTML">
+        {% include "partials/license_table.html" %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

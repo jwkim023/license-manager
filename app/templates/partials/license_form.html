@@ -1,0 +1,96 @@
+{% set is_edit = license is not none %}
+
+<div class="modal fade" id="licenseModal" tabindex="-1" aria-labelledby="licenseModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="licenseModalLabel">
+          {{ "라이선스 수정" if is_edit else "새 라이선스 등록" }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form {% if is_edit %}
+              hx-put="/partials/licenses/{{ license.id }}"
+            {% else %}
+              hx-post="/partials/licenses"
+            {% endif %}
+            hx-target="#license-table"
+            hx-swap="innerHTML">
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">제품명 <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" name="product_name" required
+                   value="{{ license.product_name if is_edit else '' }}"
+                   placeholder="예) Microsoft 365, AutoCAD">
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-6">
+              <label class="form-label fw-semibold">계정</label>
+              <input type="text" class="form-control" name="account"
+                     value="{{ license.account or '' if is_edit else '' }}"
+                     placeholder="계정 ID 또는 이메일">
+            </div>
+            <div class="col-6">
+              <label class="form-label fw-semibold">수량</label>
+              <input type="number" class="form-control" name="quantity" min="1"
+                     value="{{ license.quantity if is_edit else 1 }}">
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-6">
+              <label class="form-label fw-semibold">담당자</label>
+              <input type="text" class="form-control" name="manager"
+                     value="{{ license.manager or '' if is_edit else '' }}"
+                     placeholder="담당자 이름">
+            </div>
+            <div class="col-6">
+              <label class="form-label fw-semibold">부서</label>
+              <input type="text" class="form-control" name="department"
+                     value="{{ license.department or '' if is_edit else '' }}"
+                     placeholder="부서명">
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-6">
+              <label class="form-label fw-semibold">만료일</label>
+              <input type="date" class="form-control" name="expire_date"
+                     value="{{ license.expire_date.isoformat() if is_edit and license.expire_date else '' }}">
+            </div>
+            <div class="col-6">
+              <label class="form-label fw-semibold">상태</label>
+              <select class="form-select" name="status">
+                {% for val, label in [("active","활성"), ("expired","만료"), ("cancelled","해지")] %}
+                  <option value="{{ val }}"
+                    {% if is_edit and license.status == val %}selected{% endif %}
+                    {% if not is_edit and val == "active" %}selected{% endif %}>
+                    {{ label }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-1">
+            <label class="form-label fw-semibold">비고</label>
+            <textarea class="form-control" name="notes" rows="2"
+                      placeholder="추가 메모">{{ license.notes or '' if is_edit else '' }}</textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+          <button type="submit" class="btn btn-primary">
+            {{ "저장" if is_edit else "등록" }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

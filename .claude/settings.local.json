@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Skill(update-config)"
+      "Skill(update-config)",
+      "PowerShell(tree D:\\\\src\\\\license-manager /f)",
+      "Bash(find D:\\\\\\\\src\\\\\\\\license-manager -type f -o -type d)",
+      "PowerShell(Get-ChildItem -Path \"D:\\\\src\\\\license-manager\" -Recurse | ForEach-Object { $path = $_.FullName -replace [regex]::Escape\\(\"D:\\\\src\\\\license-manager\"\\), \"\"; $indent = \\($_.FullName | Measure-Object -Character | Select-Object -ExpandProperty Characters\\) - \\($_.Name | Measure-Object -Character | Select-Object -ExpandProperty Characters\\); if \\($_.PSIsContainer\\) { \"DIR:  \" + $path } else { \"FILE: \" + $path } } | Sort-Object)",
+      "PowerShell(Get-ChildItem -Path \"D:\\\\src\\\\license-manager\" -Force -Recurse | Select-Object FullName | ForEach-Object { $_.FullName -replace [regex]::Escape\\(\"D:\\\\src\\\\license-manager\"\\), \".\" })"
     ]
   }
 }
